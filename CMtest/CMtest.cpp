@@ -60,11 +60,12 @@ int main()
 			
 			for (int i = 0; i < nScreenHeight*nScreenWidth; i++)
 			{
-					screen[i] = 'X';
+				screen[i] = 220+i;                  //176:░ ,177:▒ ,178:▓   219:█   220:▄ 223:▀  179:│, 180:┤, 191:┐,192:└, 193:┴, 194:┬, 195:├, 196:─, 197:┼ 217:┘, 218:┌, 185:╣ 186:║ 187:╗ 188:╝  200:╚, 201:╔, 202:╩, 203:╦, 204:╠, 205:═, 206:╬, 
 			}
 			nakresliBod(5, 4);
 			nakresliBod(10, 15);
-			nakresliObdelnik(2, 6, 13, 8, 'd');
+			
+			//nakresliObdelnik(2, 6, 13, 8, 'd');        //shit dont work
 			
 			//napis text
 			//tlacitka
@@ -115,7 +116,7 @@ void nakresliObdelnik(int x, int y, int vyska, int delka, char vypln){
 
 	for (int px = 0; px < vyska; px++)
 	{
-		sprintf_s(screen,delka,radek);
+		
+		//sprintf_s(*screen,delka,radek);
 	}
-
 }
