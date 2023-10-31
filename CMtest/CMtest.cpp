@@ -45,22 +45,21 @@ int main()
 
 	while (1)
 	{
-		// We'll need time differential per frame to calculate modification
-		// to movement speeds, to ensure consistant movement, as ray-tracing
-		// is non-deterministic
+		//ukradl cas jsem a necha jsem to tady 
+		//mby bude potreba na tu balistickou vec
 		tp2 = chrono::system_clock::now();
 		chrono::duration<float> elapsedTime = tp2 - tp1;
 		tp1 = tp2;
 		float fElapsedTime = elapsedTime.count();
 
-		switch (state)
-		{
-		case 0: // menu
+		//switch (state) // switch je tu aby se menilo menu a gameplay ale asi bych to resil jinkak jako switch a pak while a ne naopak
+		//{
+		//case 0: // menu
 			//nakresli obdelnik
 			
 			for (int i = 0; i < nScreenHeight*nScreenWidth; i++)
 			{
-				screen[i] = 220+i;                  //176:░ ,177:▒ ,178:▓   219:█   220:▄ 223:▀  179:│, 180:┤, 191:┐,192:└, 193:┴, 194:┬, 195:├, 196:─, 197:┼ 217:┘, 218:┌, 185:╣ 186:║ 187:╗ 188:╝  200:╚, 201:╔, 202:╩, 203:╦, 204:╠, 205:═, 206:╬, 
+				screen[i] = ' ';               //cispa ruznych potrebnych znaku ktere se budou hodit a jsou jinak než v normalnim ascii protože cmako je stupid   //176:░ ,177:▒ ,178:▓   219:█   220:▄ 223:▀  179:│, 180:┤, 191:┐,192:└, 193:┴, 194:┬, 195:├, 196:─, 197:┼ 217:┘, 218:┌, 185:╣ 186:║ 187:╗ 188:╝  200:╚, 201:╔, 202:╩, 203:╦, 204:╠, 205:═, 206:╬, 
 			}
 			nakresliBod(5, 4);
 			nakresliBod(10, 15);
@@ -70,13 +69,13 @@ int main()
 			//napis text
 			//tlacitka
 			//slider pocet hracu
-		break;
-		case 1:
+		//break;
+		//case 1:
 			//hra
-		break;
-		default:
-		break;
-		}
+		//break;
+		//default:
+		//break;
+		//}
 		//menu
 
 
