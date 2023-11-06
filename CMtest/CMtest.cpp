@@ -26,8 +26,11 @@ float fSpeed = 5.0f;			// Walking Speed
 
 
 char* screen = new char[(nScreenWidth * nScreenHeight)+1];
-void nakresliBod(int x, int y);
+
+void nakresliBod(int x, int y, char vypln);
+int zjistiBodZSouradnic(int x, int y);
 void nakresliObdelnik(int x, int y, int vyska, int delka, char vypln);
+void nakresliPeknyObdelnik(int x, int y, int vyska, int delka, char vypln);
 int main()
 {
 	// Create Screen Buffer
@@ -61,52 +64,13 @@ int main()
 			{
 				screen[i] = ' ';               //cispa ruznych potrebnych znaku ktere se budou hodit a jsou jinak než v normalnim ascii protože cmako je stupid   //176:░ ,177:▒ ,178:▓   219:█   220:▄ 223:▀  179:│, 180:┤, 191:┐,192:└, 193:┴, 194:┬, 195:├, 196:─, 197:┼ 217:┘, 218:┌, 185:╣ 186:║ 187:╗ 188:╝  200:╚, 201:╔, 202:╩, 203:╦, 204:╠, 205:═, 206:╬, 
 			}
-			nakresliBod(5, 4);
-			nakresliBod(10, 15);
+			nakresliBod(5, 4,'.');
+			nakresliBod(10, 15,'.');
+			nakresliObdelnik(12, 20, 5, 53, 176);
+			nakresliPeknyObdelnik(30, 8, 42, 13, 177);
+
+			sprintf(screen+30,"dasdashdsakdhasj");
 			
-
-			int bx = 20;
-			int by = 10;
-			int bdelka = 30;
-			int bvyska = 10;
-			for (int x = 0; x < bdelka; x++)
-			{
-				for (int y = 0; y < bvyska; y++)
-				{
-					screen[((by + y) * nScreenWidth) + (x + bx)] = 176;
-
-
-
-					if (x == 0 && y == 0)
-					{
-						screen[((by + y) * nScreenWidth) + (x + bx)] = 201;
-					}
-					else if (x == bdelka-1 && y == 0)
-					{
-						screen[((by + y) * nScreenWidth) + (x + bx)] = 187;
-					}
-					else if (x == 0 && y == bvyska - 1)
-					{
-						screen[((by + y) * nScreenWidth) + (x + bx)] = 200;
-					}
-					else if (x == bdelka - 1 && y == bvyska - 1)
-					{
-						screen[((by + y) * nScreenWidth) + (x + bx)] = 188;
-					}
-					else if (x == 0 || x == bdelka - 1)
-					{
-						screen[((by + y) * nScreenWidth) + (x + bx)] = 186;
-					}
-					else if (y == 0 || y == bvyska-1)
-					{
-						screen[((by + y) * nScreenWidth) + (x + bx)] = 205;
-					}
-					/*if (x==0&&y==0)
-					{
-						screen[((by + y) * nScreenWidth) + (x + bx)] = '-';
-					}*/
-				}
-			}
 
 
 
@@ -129,7 +93,7 @@ int main()
 
 
 		// Display Stats
-		//sprintf_s(screen, 40, L"X=%3.2f, Y=%3.2f, A=%3.2f FPS=%3.2f ", fPlayerX, fPlayerY, fPlayerA, 1.0f / fElapsedTime);
+		sprintf(screen, "FPS=%3.0f", 1.0f / fElapsedTime);
 
 		// Display Map
 		/*for (int nx = 0; nx < 5; nx++)
@@ -147,21 +111,57 @@ int main()
 
 	return 0;
 }
-void nakresliBod(int x, int y) {
-	int bod = (y * nScreenWidth) + x;
-	screen[bod] = '.';
+void nakresliBod(int x, int y, char vypln) {
+	screen[zjistiBodZSouradnic(x,y)] = vypln;
 }
-void nakresliObdelnik(int x, int y, int vyska, int delka, char vypln){
-	int bod = (y * nScreenWidth) + x;
-	char * radek = new char[delka];
-	for (int i = 0; i < delka; i++)
+int zjistiBodZSouradnic(int x, int y) {
+	return (y * nScreenWidth) + x;
+}
+void nakresliObdelnik(int x, int y, int vyska, int delka, char vypln) {
+	for (int pomX = 0; pomX < delka; pomX++)
 	{
-		radek[i] = vypln;
+		for (int pomY = 0; pomY < vyska; pomY++)
+		{
+			screen[((y + pomY) * nScreenWidth) + (pomX + x)] = vypln;
+		}
 	}
+}
+void nakresliPeknyObdelnik(int x, int y, int vyska, int delka, char vypln) {
+	for (int pomX = 0; pomX < delka; pomX++)
+	{
+		for (int pomY = 0; pomY < vyska; pomY++)
+		{
+			screen[((y + pomY) * nScreenWidth) + (pomX + x)] = vypln;
 
-	for (int px = 0; px < vyska; px++)
-	{
-		
-		//sprintf_s(*screen,delka,radek);
+
+
+			if (pomX == 0 && pomY == 0)
+			{
+				screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 201;
+			}
+			else if (pomX == delka - 1 && pomY == 0)
+			{
+				screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 187;
+			}
+			else if (pomX == 0 && pomY == vyska - 1)
+			{
+				screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 200;
+			}
+			else if (pomX == delka - 1 && pomY == vyska - 1)
+			{
+				screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 188;
+			}
+			else if (pomX == 0 || pomX == delka - 1)
+			{
+				screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 186;
+			}
+			else if (pomY == 0 || pomY == vyska - 1)
+			{
+				screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 205;
+			}
+		}
 	}
+}
+void zapisText(int x, int y, char text[100]) {
+	sprintf(screen + zjistiBodZSouradnic(x,y), text);
 }
