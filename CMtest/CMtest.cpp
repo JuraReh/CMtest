@@ -64,6 +64,52 @@ int main()
 			nakresliBod(5, 4);
 			nakresliBod(10, 15);
 			
+
+			int bx = 20;
+			int by = 10;
+			int bdelka = 30;
+			int bvyska = 10;
+			for (int x = 0; x < bdelka; x++)
+			{
+				for (int y = 0; y < bvyska; y++)
+				{
+					screen[((by + y) * nScreenWidth) + (x + bx)] = 176;
+
+
+
+					if (x == 0 && y == 0)
+					{
+						screen[((by + y) * nScreenWidth) + (x + bx)] = 201;
+					}
+					else if (x == bdelka-1 && y == 0)
+					{
+						screen[((by + y) * nScreenWidth) + (x + bx)] = 187;
+					}
+					else if (x == 0 && y == bvyska - 1)
+					{
+						screen[((by + y) * nScreenWidth) + (x + bx)] = 200;
+					}
+					else if (x == bdelka - 1 && y == bvyska - 1)
+					{
+						screen[((by + y) * nScreenWidth) + (x + bx)] = 188;
+					}
+					else if (x == 0 || x == bdelka - 1)
+					{
+						screen[((by + y) * nScreenWidth) + (x + bx)] = 186;
+					}
+					else if (y == 0 || y == bvyska-1)
+					{
+						screen[((by + y) * nScreenWidth) + (x + bx)] = 205;
+					}
+					/*if (x==0&&y==0)
+					{
+						screen[((by + y) * nScreenWidth) + (x + bx)] = '-';
+					}*/
+				}
+			}
+
+
+
 			//nakresliObdelnik(2, 6, 13, 8, 'd');        //shit dont work
 			
 			//napis text
