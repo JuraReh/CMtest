@@ -7,6 +7,7 @@
 #include <utility>
 #include <algorithm>
 #include <chrono>
+#include <conio.h>
 using namespace std;
 
 #include <stdio.h>
@@ -27,11 +28,24 @@ float fSpeed = 5.0f;			// Walking Speed
 
 char* screen = new char[(nScreenWidth * nScreenHeight)+1];
 
+
+
+
+typedef struct {
+	const char* text;
+	bool togled;
+	int x;
+	int y;
+} tlacitko;
+
+void clearScreen();
+void clearScreen(char vypln);
 void nakresliBod(int x, int y, char vypln);
 int zjistiBodZSouradnic(int x, int y);
 void nakresliObdelnik(int x, int y, int vyska, int delka, char vypln);
-void nakresliPeknyObdelnik(int x, int y, int vyska, int delka, char vypln);
-void zapisText(int x, int y, char text[100]);
+void nakresliPeknyObdelnik(int x, int y, int vyska, int delka, char vypln, int okraj);
+void zapisText(int x, int y, const char text[100]);
+void vypisTlacitko(tlacitko t);
 int main()
 {
 	// Create Screen Buffer
@@ -41,12 +55,14 @@ int main()
 	DWORD dwBytesWritten = 0;
 	HWND hWnd = GetConsoleWindow();
 	ShowWindow(hWnd, SW_SHOWMAXIMIZED);
-
+	
 
 
 	auto tp1 = chrono::system_clock::now();
 	auto tp2 = chrono::system_clock::now();
-
+	int playerCount = 0;
+	int curentButon = 0;
+	tlacitko tlacitka[3] = { {"pp1",false,10,15}, {"pp2",false,20,15}, {"pp3",false,30,15} };
 	while (1)
 	{
 		//ukradl cas jsem a necha jsem to tady 
@@ -55,39 +71,73 @@ int main()
 		chrono::duration<float> elapsedTime = tp2 - tp1;
 		tp1 = tp2;
 		float fElapsedTime = elapsedTime.count();
-
-		//switch (state) // switch je tu aby se menilo menu a gameplay ale asi bych to resil jinkak jako switch a pak while a ne naopak
-		//{
-		//case 0: // menu
-			//nakresli obdelnik
+		//cispa ruznych potrebnych znaku ktere se budou hodit a jsou jinak než v normalnim ascii protože cmako je stupid   //176:░ ,177:▒ ,178:▓   219:█   220:▄ 223:▀  179:│, 180:┤, 191:┐,192:└, 193:┴, 194:┬, 195:├, 196:─, 197:┼ 217:┘, 218:┌, 185:╣ 186:║ 187:╗ 188:╝  200:╚, 201:╔, 202:╩, 203:╦, 204:╠, 205:═, 206:╬, 
+		    clearScreen();
 			
-			for (int i = 0; i < nScreenHeight*nScreenWidth; i++)
-			{
-				screen[i] = ' ';               //cispa ruznych potrebnych znaku ktere se budou hodit a jsou jinak než v normalnim ascii protože cmako je stupid   //176:░ ,177:▒ ,178:▓   219:█   220:▄ 223:▀  179:│, 180:┤, 191:┐,192:└, 193:┴, 194:┬, 195:├, 196:─, 197:┼ 217:┘, 218:┌, 185:╣ 186:║ 187:╗ 188:╝  200:╚, 201:╔, 202:╩, 203:╦, 204:╠, 205:═, 206:╬, 
-			}
 			nakresliBod(5, 4,'.');
 			nakresliBod(10, 15,'.');
 			nakresliObdelnik(12, 20, 5, 53, 176);
-			nakresliPeknyObdelnik(30, 8, 42, 13, 177);
-
-			
+			nakresliPeknyObdelnik(30, 8, 42, 13, 177,1);			
 			zapisText(20, 30, "Testovaci kus textu.");
 
-
-
-			//nakresliObdelnik(2, 6, 13, 8, 'd');        //shit dont work
-			
-			//napis text
 			//tlacitka
+			vypisTlacitko(tlacitka[0]);
+			vypisTlacitko(tlacitka[1]);
+			vypisTlacitko(tlacitka[2]);
+			
+
+
 			//slider pocet hracu
-		//break;
-		//case 1:
-			//hra
-		//break;
-		//default:
-		//break;
-		//}
-		//menu
+			char pp = ' ';
+			sprintf(screen + 318, "%d", playerCount/*/500*/);
+			if (_kbhit())
+			{
+				pp = _getch();
+
+			}
+			switch (pp)
+			{
+			case 72:
+				playerCount++;
+				break;
+			case 80:
+				playerCount--;
+				break;
+			case 75:
+				for (size_t i = 0; i < sizeof(tlacitka)/sizeof(tlacitka[0]); i++)
+				{
+					tlacitka[i].togled = false;
+				}
+				if (curentButon < (sizeof(tlacitka) / sizeof(tlacitka[0])))
+				{
+					curentButon--;
+					
+				}
+				else
+				{
+					curentButon = 0;
+				}
+				tlacitka[curentButon].togled = true;
+				break;
+			case 77:
+				for (size_t i = 0; i < sizeof(tlacitka) / sizeof(tlacitka[0]); i++)
+				{
+					tlacitka[i].togled = false;
+				}
+				if (curentButon < (sizeof(tlacitka) / sizeof(tlacitka[0])))
+				{
+					curentButon++;
+
+				}
+				else
+				{
+					curentButon = 0;
+				}
+				tlacitka[curentButon].togled = true;
+				break;
+			default:
+				break;
+			}
 
 
 
@@ -95,15 +145,6 @@ int main()
 
 		// Display Stats
 		sprintf(screen, "FPS=%3.0f", 1.0f / fElapsedTime);
-
-		// Display Map
-		/*for (int nx = 0; nx < 5; nx++)
-			for (int ny = 0; ny < 5; ny++)
-			{
-				screen[(ny + 1) * nScreenWidth + nx] = '´';
-			}
-		screen[((int)fPlayerX + 1) * nScreenWidth + (int)fPlayerY] = 'P';*/
-
 		// Display Frame
 		screen[nScreenWidth * nScreenHeight] = '\0';
 		WriteConsoleOutputCharacter(hConsole, (LPCSTR)screen, nScreenWidth * nScreenHeight, { 0,0 }, &dwBytesWritten);
@@ -111,6 +152,18 @@ int main()
 	}
 
 	return 0;
+}
+void clearScreen() {
+	for (int i = 0; i < nScreenHeight * nScreenWidth; i++)
+	{
+		screen[i] = ' ';
+	}
+}
+void clearScreen(char vypln) {
+	for (int i = 0; i < nScreenHeight * nScreenWidth; i++)
+	{
+		screen[i] = vypln;
+	}
 }
 void nakresliBod(int x, int y, char vypln) {
 	screen[zjistiBodZSouradnic(x,y)] = vypln;
@@ -127,7 +180,7 @@ void nakresliObdelnik(int x, int y, int vyska, int delka, char vypln) {
 		}
 	}
 }
-void nakresliPeknyObdelnik(int x, int y, int vyska, int delka, char vypln) {
+void nakresliPeknyObdelnik(int x, int y, int vyska, int delka, char vypln, int okraj) {
 	for (int pomX = 0; pomX < delka; pomX++)
 	{
 		for (int pomY = 0; pomY < vyska; pomY++)
@@ -136,33 +189,79 @@ void nakresliPeknyObdelnik(int x, int y, int vyska, int delka, char vypln) {
 
 
 
-			if (pomX == 0 && pomY == 0)
+			switch (okraj)
 			{
-				screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 201;
+			case 1:
+				if (pomX == 0 && pomY == 0)
+				{
+					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 218;
+				}
+				else if (pomX == delka - 1 && pomY == 0)
+				{
+					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 191;
+				}
+				else if (pomX == 0 && pomY == vyska - 1)
+				{
+					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 192;
+				}
+				else if (pomX == delka - 1 && pomY == vyska - 1)
+				{
+					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 217;
+				}
+				else if (pomX == 0 || pomX == delka - 1)
+				{
+					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 179;
+				}
+				else if (pomY == 0 || pomY == vyska - 1)
+				{
+					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 196;
+				}
+				break;
+			case 2:
+				if (pomX == 0 && pomY == 0)
+				{
+					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 201;
+				}
+				else if (pomX == delka - 1 && pomY == 0)
+				{
+					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 187;
+				}
+				else if (pomX == 0 && pomY == vyska - 1)
+				{
+					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 200;
+				}
+				else if (pomX == delka - 1 && pomY == vyska - 1)
+				{
+					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 188;
+				}
+				else if (pomX == 0 || pomX == delka - 1)
+				{
+					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 186;
+				}
+				else if (pomY == 0 || pomY == vyska - 1)
+				{
+					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 205;
+				}
+				break;
+			default:
+				break;
 			}
-			else if (pomX == delka - 1 && pomY == 0)
-			{
-				screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 187;
-			}
-			else if (pomX == 0 && pomY == vyska - 1)
-			{
-				screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 200;
-			}
-			else if (pomX == delka - 1 && pomY == vyska - 1)
-			{
-				screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 188;
-			}
-			else if (pomX == 0 || pomX == delka - 1)
-			{
-				screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 186;
-			}
-			else if (pomY == 0 || pomY == vyska - 1)
-			{
-				screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 205;
-			}
+			
 		}
 	}
 }
-void zapisText(int x, int y, char text[100]) {
+void zapisText(int x, int y,const char text[100]) {
 	sprintf(screen + zjistiBodZSouradnic(x,y), text);
+}
+void vypisTlacitko(tlacitko t) {
+	
+	if (t.togled)
+	{
+		nakresliPeknyObdelnik(t.x, t.y, 3, strlen(t.text) + 3, ' ', 2);
+	}
+	else
+	{
+		nakresliPeknyObdelnik(t.x, t.y, 3, strlen(t.text) + 3, ' ', 1);
+	}
+	zapisText(t.x + 1, t.y + 1, t.text);
 }
