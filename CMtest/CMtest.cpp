@@ -31,6 +31,7 @@ void nakresliBod(int x, int y, char vypln);
 int zjistiBodZSouradnic(int x, int y);
 void nakresliObdelnik(int x, int y, int vyska, int delka, char vypln);
 void nakresliPeknyObdelnik(int x, int y, int vyska, int delka, char vypln);
+void zapisText(int x, int y, char text[100]);
 int main()
 {
 	// Create Screen Buffer
@@ -69,8 +70,8 @@ int main()
 			nakresliObdelnik(12, 20, 5, 53, 176);
 			nakresliPeknyObdelnik(30, 8, 42, 13, 177);
 
-			sprintf(screen+30,"dasdashdsakdhasj");
 			
+			zapisText(20, 30, "Testovaci kus textu.");
 
 
 
