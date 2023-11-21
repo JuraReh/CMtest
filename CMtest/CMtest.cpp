@@ -37,7 +37,12 @@ typedef struct {
 	int x;
 	int y;
 } tlacitko;
-
+typedef struct {
+	float uhelHlavne;
+	int x;
+} tank;
+void vykresliTank(tank tank, int floorHeight);
+void zapissloubeczeme(int vyskaSloupce);
 void clearScreen();
 void clearScreen(char vypln);
 void nakresliBod(int x, int y, char vypln);
@@ -63,8 +68,11 @@ int main()
 	int playerCount = 0;
 	int curentButon = 0;
 	tlacitko tlacitka[3] = { {"pp1",false,10,15}, {"pp2",false,20,15}, {"pp3",false,30,15} };
+	
 	while (1)
 	{
+		if (state != 0)
+			break;
 		//ukradl cas jsem a necha jsem to tady 
 		//mby bude potreba na tu balistickou vec
 		tp2 = chrono::system_clock::now();
@@ -135,9 +143,16 @@ int main()
 				}
 				tlacitka[curentButon].togled = true;
 				break;
+			case 'm':
+				state = 1;
+			break;
 			default:
 				break;
 			}
+
+			
+
+				
 
 
 
@@ -150,8 +165,60 @@ int main()
 		WriteConsoleOutputCharacter(hConsole, (LPCSTR)screen, nScreenWidth * nScreenHeight, { 0,0 }, &dwBytesWritten);
 
 	}
+	if (state == 1) {
+		int floorHeight = 20; //potom bude pole cisel
+		clearScreen();
+		zapissloubeczeme(floorHeight);
+		
+		tank* poleTanku = (tank*)malloc(playerCount * sizeof(tank));
+		poleTanku[0].uhelHlavne = 0;
+		poleTanku[0].x = rand() % nScreenWidth;
+		poleTanku[1].uhelHlavne = 0;
+		poleTanku[1].x = rand() % nScreenWidth;
+		auto tp1 = chrono::system_clock::now();
+		auto tp2 = chrono::system_clock::now();
 
+		while (1)
+		{
+			//ukradl cas jsem a necha jsem to tady 
+		//mby bude potreba na tu balistickou vec
+			tp2 = chrono::system_clock::now();
+			chrono::duration<float> elapsedTime = tp2 - tp1;
+			tp1 = tp2;
+			float fElapsedTime = elapsedTime.count();
+			vykresliTank(poleTanku[0], floorHeight);
+			vykresliTank(poleTanku[1], floorHeight);
+
+
+
+
+			// Display Stats
+			sprintf(screen, "FPS=%3.0f", 1.0f / fElapsedTime);
+
+			screen[nScreenWidth * nScreenHeight] = '\0';
+			WriteConsoleOutputCharacter(hConsole, (LPCSTR)screen, nScreenWidth* nScreenHeight, { 0,0 }, & dwBytesWritten);
+		}
+		
+	}
 	return 0;
+}
+void vykresliTank(tank tank,int vyskaSloupce) {
+	nakresliBod(tank.x, nScreenHeight - vyskaSloupce, 220);
+	nakresliBod(tank.x+1, nScreenHeight - vyskaSloupce, 220);
+	nakresliBod(tank.x-1, nScreenHeight - vyskaSloupce, 219);
+	nakresliBod(tank.x, nScreenHeight - vyskaSloupce -1, '_');
+	nakresliBod(tank.x-1, nScreenHeight - vyskaSloupce - 1, '_');
+}
+void zapissloubeczeme(int vyskaSloupce) { // zatim jen vypisuje jednu vysku
+	for (size_t x = 0; x < nScreenWidth; x++)
+	{
+		for (size_t y = 0; y <nScreenHeight; y++)
+		{
+			if (y>(nScreenHeight - vyskaSloupce)) {
+				nakresliBod(x, y, 176);
+			}
+		}
+	}
 }
 void clearScreen() {
 	for (int i = 0; i < nScreenHeight * nScreenWidth; i++)
