@@ -338,3 +338,9 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+#  ignoring out (builded cmake project)
+out
+
+#  ignoring vsc shits 
+.vscode

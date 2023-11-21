@@ -1,7 +1,4 @@
-﻿// CMtest.cpp: Definuje vstupní bod pro aplikaci.
-//
-
-#include "CMtest.h"
+﻿#include "CMtest.h"
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -51,6 +48,8 @@ void nakresliObdelnik(int x, int y, int vyska, int delka, char vypln);
 void nakresliPeknyObdelnik(int x, int y, int vyska, int delka, char vypln, int okraj);
 void zapisText(int x, int y, const char text[100]);
 void vypisTlacitko(tlacitko t);
+
+
 int main()
 {
 	// Create Screen Buffer
