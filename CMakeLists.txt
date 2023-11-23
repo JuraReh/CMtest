@@ -6,4 +6,4 @@ cmake_minimum_required (VERSION 3.8)
 project ("CMtest")
 
 # Zahrňte podprojekty.
-add_subdirectory ("CMtest, Project-tanks")
+add_subdirectory ("CMtest")

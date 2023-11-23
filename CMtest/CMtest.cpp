@@ -1,6 +1,6 @@
 ﻿#include "CMtest.h"
 #include <iostream>
-#include <vector>
+//#include <vector>
 #include <utility>
 #include <algorithm>
 #include <chrono>
@@ -10,10 +10,10 @@ using namespace std;
 #include <stdio.h>
 #include <Windows.h>
 
-int  nScreenWidth = 240;			// Console Screen Size X (columns)
-int nScreenHeight = 63;			// Console Screen Size Y (rows)
+const int  nScreenWidth = 240;			// Console Screen Size X (columns)
+const int nScreenHeight = 63;			// Console Screen Size Y (rows)
 
-byte	state = 0;
+int state = 0;
 float fPlayerX = 14.7f;			// Player Start Position
 float fPlayerY = 5.09f;
 float fPlayerA = 0.0f;			// Player Start Rotation
@@ -24,7 +24,7 @@ float fSpeed = 5.0f;			// Walking Speed
 
 
 char* screen = new char[(nScreenWidth * nScreenHeight)+1];
-
+char screen2D[nScreenHeight][nScreenWidth];
 
 
 
@@ -37,6 +37,7 @@ typedef struct {
 typedef struct {
 	float uhelHlavne;
 	int x;
+	int y;
 } tank;
 void vykresliTank(tank tank, int floorHeight);
 void zapissloubeczeme(int vyskaSloupce);
@@ -85,18 +86,18 @@ int main()
 			nakresliBod(10, 15,'.');
 			nakresliObdelnik(12, 20, 5, 53, 176);
 			nakresliPeknyObdelnik(30, 8, 42, 13, 177,1);			
-			zapisText(20, 30, "Testovaci kus textu.");
+			//zapisText(20, 30, "Testovaci kus textu.");
 
 			//tlacitka
-			vypisTlacitko(tlacitka[0]);
+			/*vypisTlacitko(tlacitka[0]);
 			vypisTlacitko(tlacitka[1]);
-			vypisTlacitko(tlacitka[2]);
+			vypisTlacitko(tlacitka[2]);*/
 			
 
 
 			//slider pocet hracu
 			char pp = ' ';
-			sprintf(screen + 318, "%d", playerCount/*/500*/);
+			screen2D[10][10] = '0' + playerCount;
 			if (_kbhit())
 			{
 				pp = _getch();
@@ -158,10 +159,25 @@ int main()
 
 
 		// Display Stats
-		sprintf(screen, "FPS=%3.0f", 1.0f / fElapsedTime);
+		//sprintf(screen, "FPS=%3.0f", 1.0f / fElapsedTime);
 		// Display Frame
+
+
+
+
+		//for (int y = 0; y < nScreenHeight; y++) {
+		//	for (int x = 0; x < nScreenWidth; x++) {
+		//		screen[(x * nScreenWidth) + y] = screen2D[x][y];
+		//	}
+		//}
+		
+
+
+
+
+		//preved2dNaOutput();
 		screen[nScreenWidth * nScreenHeight] = '\0';
-		WriteConsoleOutputCharacter(hConsole, (LPCSTR)screen, nScreenWidth * nScreenHeight, { 0,0 }, &dwBytesWritten);
+		WriteConsoleOutputCharacter(hConsole, (LPCSTR)screen2D, nScreenWidth * nScreenHeight, { 0,0 }, &dwBytesWritten);
 
 	}
 	if (state == 1) {
@@ -195,7 +211,7 @@ int main()
 			sprintf(screen, "FPS=%3.0f", 1.0f / fElapsedTime);
 
 			screen[nScreenWidth * nScreenHeight] = '\0';
-			WriteConsoleOutputCharacter(hConsole, (LPCSTR)screen, nScreenWidth* nScreenHeight, { 0,0 }, & dwBytesWritten);
+			WriteConsoleOutputCharacter(hConsole, (LPCSTR)screen2D, nScreenWidth* nScreenHeight, { 0,0 }, & dwBytesWritten);
 		}
 		
 	}
@@ -220,19 +236,25 @@ void zapissloubeczeme(int vyskaSloupce) { // zatim jen vypisuje jednu vysku
 	}
 }
 void clearScreen() {
-	for (int i = 0; i < nScreenHeight * nScreenWidth; i++)
+	for (int x = 0; x < nScreenWidth; x++)
 	{
-		screen[i] = ' ';
+		for (int y = 0; y < nScreenHeight; y++)
+		{
+			screen2D[y][x] = ' ';
+		}
 	}
 }
 void clearScreen(char vypln) {
-	for (int i = 0; i < nScreenHeight * nScreenWidth; i++)
+	for (int x = 0; x < nScreenWidth; x++)
 	{
-		screen[i] = vypln;
+		for (int y = 0; y < nScreenHeight; y++)
+		{
+			screen2D[y][x] = vypln;
+		}
 	}
 }
 void nakresliBod(int x, int y, char vypln) {
-	screen[zjistiBodZSouradnic(x,y)] = vypln;
+	screen2D[y][x] = vypln;
 }
 int zjistiBodZSouradnic(int x, int y) {
 	return (y * nScreenWidth) + x;
@@ -242,7 +264,7 @@ void nakresliObdelnik(int x, int y, int vyska, int delka, char vypln) {
 	{
 		for (int pomY = 0; pomY < vyska; pomY++)
 		{
-			screen[((y + pomY) * nScreenWidth) + (pomX + x)] = vypln;
+			screen2D[(y + pomY)][(pomX + x)] = vypln;
 		}
 	}
 }
@@ -251,7 +273,7 @@ void nakresliPeknyObdelnik(int x, int y, int vyska, int delka, char vypln, int o
 	{
 		for (int pomY = 0; pomY < vyska; pomY++)
 		{
-			screen[((y + pomY) * nScreenWidth) + (pomX + x)] = vypln;
+			screen2D[(y + pomY)][(pomX + x)] = vypln;
 
 
 
@@ -260,53 +282,53 @@ void nakresliPeknyObdelnik(int x, int y, int vyska, int delka, char vypln, int o
 			case 1:
 				if (pomX == 0 && pomY == 0)
 				{
-					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 218;
+					screen2D[(y + pomY)][(pomX + x)] = 218;
 				}
 				else if (pomX == delka - 1 && pomY == 0)
 				{
-					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 191;
+					screen2D[(y + pomY)][(pomX + x)] = 191;
 				}
 				else if (pomX == 0 && pomY == vyska - 1)
 				{
-					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 192;
+					screen2D[(y + pomY)][(pomX + x)] = 192;
 				}
 				else if (pomX == delka - 1 && pomY == vyska - 1)
 				{
-					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 217;
+					screen2D[(y + pomY)][(pomX + x)] = 217;
 				}
 				else if (pomX == 0 || pomX == delka - 1)
 				{
-					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 179;
+					screen2D[(y + pomY)][(pomX + x)] = 179;
 				}
 				else if (pomY == 0 || pomY == vyska - 1)
 				{
-					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 196;
+					screen2D[(y + pomY)][(pomX + x)] = 196;
 				}
 				break;
 			case 2:
 				if (pomX == 0 && pomY == 0)
 				{
-					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 201;
+					screen2D[(y + pomY)][(pomX + x)] = 201;
 				}
 				else if (pomX == delka - 1 && pomY == 0)
 				{
-					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 187;
+					screen2D[(y + pomY)][(pomX + x)] = 187;
 				}
 				else if (pomX == 0 && pomY == vyska - 1)
 				{
-					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 200;
+					screen2D[(y + pomY)][(pomX + x)] = 200;
 				}
 				else if (pomX == delka - 1 && pomY == vyska - 1)
 				{
-					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 188;
+					screen2D[(y + pomY)][(pomX + x)] = 188;
 				}
 				else if (pomX == 0 || pomX == delka - 1)
 				{
-					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 186;
+					screen2D[(y + pomY)][(pomX + x)] = 186;
 				}
 				else if (pomY == 0 || pomY == vyska - 1)
 				{
-					screen[((y + pomY) * nScreenWidth) + (pomX + x)] = 205;
+					screen2D[(y + pomY)][(pomX + x)] = 205;
 				}
 				break;
 			default:
@@ -317,7 +339,7 @@ void nakresliPeknyObdelnik(int x, int y, int vyska, int delka, char vypln, int o
 	}
 }
 void zapisText(int x, int y,const char text[100]) {
-	sprintf(screen + zjistiBodZSouradnic(x,y), text);
+	//sprintf(screen2D[x][y], text);
 }
 void vypisTlacitko(tlacitko t) {
 	
